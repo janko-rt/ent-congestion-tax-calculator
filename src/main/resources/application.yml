@@ -1,0 +1,21 @@
+spring:
+  server.port: 8080
+  application.name: congestion-tax-calculator
+  banner: location=classpath:banner.txt
+  datasource:
+    url: jdbc:postgresql://localhost:5432/congestion_tax_calculator
+    username: postgres
+    password: postgres
+    platform: postgresql
+  jpa:
+    properties.hibernate:
+      jdbc.batch_size: 100
+      jdbc.fetch_size: 100
+      order_inserts: true
+      order_updates: true
+      batch_versioned_data: true
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc.lob.non_contextual_creation: true
+    hibernate.ddl-auto: none
+  liquibase:
+    enabled: false

@@ -1,0 +1,58 @@
+openapi: 3.0.4
+info:
+  title: Congestion tax calculator
+  version: 1.0.0
+paths:
+  /api/v1/tax/tax-incoming-vehicle:
+    post:
+      tags:
+        - tax
+      summary: Tax incoming vehicle
+      description: Tax incoming vehicle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaxRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+        '400':
+          description: Invalid input
+        '500':
+          description: Backend error
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    TaxRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+    Response:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message

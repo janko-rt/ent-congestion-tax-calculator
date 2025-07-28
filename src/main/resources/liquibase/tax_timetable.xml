@@ -1,0 +1,15 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet  author="janko"  id="2025-07-28-01">
+        <createSequence  dataType="int8"
+                         incrementBy="1"
+                         schemaName="public"
+                         sequenceName="tax_timetable_seq"
+                         startValue="1"/>
+    </changeSet>
+
+</databaseChangeLog>
