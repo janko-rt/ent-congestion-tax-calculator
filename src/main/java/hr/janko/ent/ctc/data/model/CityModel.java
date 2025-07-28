@@ -20,9 +20,6 @@ public class CityModel {
     @Column(name = "currency")
     private String currency;//This should probably be on level of country, however I feel for this assignment this should be fine
 
-    @Column(name = "zone_id")
-    private String zoneId;
-
     @OneToMany(mappedBy = "cityModel")
     private List<TaxTimetableModel> taxTimetables;//These should maybe be "city" level time tables, maybe there are some general rules for whole districts/states or the country
 }

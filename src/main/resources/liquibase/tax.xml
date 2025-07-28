@@ -39,4 +39,7 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="2025-07-28-06" author="janko">
+        <modifyDataType tableName="tax_timetable" columnName="recorded_date" newDataType="timestamp without time zone"></modifyDataType>
+    </changeSet>
 </databaseChangeLog>

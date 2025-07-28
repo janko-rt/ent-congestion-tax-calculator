@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity(name = "tax")
@@ -19,7 +20,7 @@ public class TaxModel {
     private String registrationPlateNumber;
 
     @Column(name = "recorded_date")
-    private Instant recordedDate;
+    private LocalDateTime recordedDate;
 
     @Column(name = "amount")
     private BigDecimal amount;
