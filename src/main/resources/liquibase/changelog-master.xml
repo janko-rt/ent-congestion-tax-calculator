@@ -4,5 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+    <include file="city.xml" relativeToChangelogFile="true"></include>
     <include file="tax_timetable.xml" relativeToChangelogFile="true"></include>
+    <include file="tax.xml" relativeToChangelogFile="true"></include>
 </databaseChangeLog>

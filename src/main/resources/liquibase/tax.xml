@@ -8,25 +8,34 @@
         <createSequence  dataType="int8"
                          incrementBy="1"
                          schemaName="public"
-                         sequenceName="tax_timetable_seq"
+                         sequenceName="tax_seq"
                          startValue="1"/>
     </changeSet>
-    <changeSet author="janko" id="2025-07-28-04" >
-        <createTable tableName="tax_timetable">
+    <changeSet author="janko" id="2025-07-28-02" >
+        <createTable tableName="tax">
             <column name="id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="tax_timetable_pk"/>
+                <constraints primaryKey="true" primaryKeyName="tax_pk"/>
             </column>
-            <column name="start_time" type="time without time zone" >
+            <column name="registration_plate_number" type="varchar(128)" >
                 <constraints nullable="false" />
             </column>
-            <column name="end_time" type="time without time zone">
+            <column name="recorded_date" type="timestamp with time zone">
                 <constraints nullable="false" />
             </column>
             <column name="amount" type="numeric(12,2)">
                 <constraints nullable="false" />
             </column>
-            <column name="city_id" type="BIGINT">
-                <constraints referencedColumnNames="id" referencedTableName="city" foreignKeyName="fk_city"/>
+            <column name="currency" type="varchar(3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="tax_status" type="varchar(3)">
+                <constraints nullable="false" />
+            </column>
+            <column name="uuid" type="varchar(128)">
+                <constraints nullable="false" />
+            </column>
+            <column name="tax_timetable_id" type="BIGINT">
+                <constraints referencedColumnNames="id" referencedTableName="tax_timetable" foreignKeyName="fk_tax_timetable"/>
             </column>
         </createTable>
     </changeSet>

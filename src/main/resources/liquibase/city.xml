@@ -4,29 +4,26 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
-    <changeSet  author="janko"  id="2025-07-28-01">
-        <createSequence  dataType="int8"
+    <changeSet  author="janko"  id="2025-07-28-02">
+        <createSequence  dataType="BIGINT"
                          incrementBy="1"
                          schemaName="public"
-                         sequenceName="tax_timetable_seq"
+                         sequenceName="city_seq"
                          startValue="1"/>
     </changeSet>
-    <changeSet author="janko" id="2025-07-28-04" >
-        <createTable tableName="tax_timetable">
+    <changeSet author="janko" id="2025-07-28-03" >
+        <createTable tableName="city">
             <column name="id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="tax_timetable_pk"/>
+                <constraints primaryKey="true" primaryKeyName="city_pk"/>
             </column>
-            <column name="start_time" type="time without time zone" >
+            <column name="name" type="varchar(128)" >
                 <constraints nullable="false" />
             </column>
-            <column name="end_time" type="time without time zone">
+            <column name="currency" type="varchar(128)" >
                 <constraints nullable="false" />
             </column>
-            <column name="amount" type="numeric(12,2)">
+            <column name="zone_id" type="varchar(128)">
                 <constraints nullable="false" />
-            </column>
-            <column name="city_id" type="BIGINT">
-                <constraints referencedColumnNames="id" referencedTableName="city" foreignKeyName="fk_city"/>
             </column>
         </createTable>
     </changeSet>
