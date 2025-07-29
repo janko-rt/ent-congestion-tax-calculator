@@ -40,6 +40,16 @@
         </createTable>
     </changeSet>
     <changeSet id="2025-07-28-06" author="janko">
-        <modifyDataType tableName="tax_timetable" columnName="recorded_date" newDataType="timestamp without time zone"></modifyDataType>
+        <modifyDataType tableName="tax" columnName="recorded_date" newDataType="timestamp without time zone"></modifyDataType>
+    </changeSet>
+    <changeSet id="2025-07-28-07" author="janko">
+        <dropNotNullConstraint tableName="tax" columnName="registration_plate_number"></dropNotNullConstraint>
+        <dropNotNullConstraint tableName="tax" columnName="recorded_date"></dropNotNullConstraint>
+        <dropNotNullConstraint tableName="tax" columnName="amount"></dropNotNullConstraint>
+        <dropNotNullConstraint tableName="tax" columnName="currency"></dropNotNullConstraint>
+        <modifyDataType tableName="tax" columnName="tax_status" newDataType="varchar(64)"></modifyDataType>
+        <addColumn tableName="tax">
+            <column name="error_message" type="varchar(256)"></column>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>

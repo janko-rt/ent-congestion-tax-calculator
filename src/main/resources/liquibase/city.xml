@@ -27,4 +27,8 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet id="2025-07-29-01" author="janko">
+        <dropColumn tableName="city" columnName="zone_id"></dropColumn>
+    </changeSet>
 </databaseChangeLog>

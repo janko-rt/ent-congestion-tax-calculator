@@ -1,7 +1,10 @@
 package hr.janko.ent.ctc.data.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -9,7 +12,10 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity(name = "tax")
-@SequenceGenerator(name = "tax_generator", sequenceName = "tax_sequence", allocationSize = 1)
+@SequenceGenerator(name = "tax_generator", sequenceName = "tax_seq", allocationSize = 1)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TaxModel {
 
     @Id
@@ -34,6 +40,9 @@ public class TaxModel {
 
     @Column(name = "uuid")
     private String uuid;
+
+    @Column(name = "error_message")
+    private String errorMessage;
 
     @Column(name = "tax_timetable_id")
     private Long taxTimetableId;
