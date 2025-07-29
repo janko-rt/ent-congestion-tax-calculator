@@ -1,0 +1,12 @@
+Questions/observations
+Should tax amounts which would go over 60 SEK be subject to change to accommodate the 60SEK limit or outright fully discarded
+Is this application a candidate for being used elsewhere in the world for time zone purposes?
+Does the 60 minute single charge rule apply from full hour to hour or is it exactly 60 minutes? Secondly if first the toll calculates 13 SEK, then comes 8 SEK which is within 60 minutes of the first and is ignored what should happen if within 60 minutes of the second comes a third toll of say 6 SEK
+Are cities perhaps planned to be grouped into districts/states?
+
+Next steps
+Write up missing tests
+I would implement the missing holidays as a separate holiday table, and simply double check both the weekend days and the holidays through a new validator.
+Exempt vehicle check would be done much the same, the REST api would get a new field for the exempt vehicles and I would simply query the table for it.
+Move daily limit from constant in code to city level
+Move the single charge rule 60 minutes to city level
