@@ -30,7 +30,7 @@ public class TaxServiceImpl implements TaxService {
 
     @Override
     @Transactional
-    public TaxModel checkForPlateNumberLastHour(TaxModel taxModel) {
+    public TaxModel validateSingleChargeRule(TaxModel taxModel) {
         LocalDateTime start = taxModel.getRecordedDate().minusHours(1L);
 
         //This doesn't make sense to do in DB since even if people drive around a lot it's highly unlikely that just doing these filters through stream() would cause problems, but this is more of a showcase

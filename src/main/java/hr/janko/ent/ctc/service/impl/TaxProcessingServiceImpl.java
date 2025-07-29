@@ -45,53 +45,77 @@ public class TaxProcessingServiceImpl implements TaxProcessingService {
             return taxService.saveTax(taxModel);
         }
 
-        try {
-            Optional<CityModel> cityOptional = cityService.fetchById(taxRequestDto.getCityId().longValue());
-            if (cityOptional.isEmpty()) {
-                log.error("City not found for id {} for uuid {}", taxRequestDto.getCityId(), taxModel.getUuid());
-                taxModel.setTaxStatus(TaxStatus.ERROR);
-                taxModel.setErrorMessage("City not found");
+        try {//This could use more polish with time
+            Optional<CityModel> cityModel = validateAndEnrichWithCityData(taxRequestDto, taxModel);
+            if (cityModel.isEmpty()) {
                 return taxModel;
             }
-            CityModel cityModel = cityOptional.get();
-            taxModel.setCurrency(cityModel.getCurrency());
 
-
-            LocalTime recordedTime = taxModel.getRecordedDate().toLocalTime();
-            List<TaxTimetableModel> taxTimeTables = cityModel.getTaxTimetables()
-                    .stream()
-                    .filter(taxTimetableModel -> recordedTime.isAfter(taxTimetableModel.getStartTime()) &&
-                            recordedTime.isBefore(taxTimetableModel.getEndTime()))
-                    .toList();
-            if (taxTimeTables.size() != 1) {
-                log.error("Tax timetable list for uuid {} does not contain exactly one record, instead it contains {}", taxModel.getUuid(), taxTimeTables.size());
-                taxModel.setTaxStatus(TaxStatus.ERROR);
-                taxModel.setErrorMessage("Incorrect number of ");
-                return taxService.saveTax(taxModel);
+            validateTaxTablesAndEnrichWithAmount(taxModel, cityModel.get());
+            if (taxModel.getTaxStatus() != TaxStatus.NEW) {
+                return taxModel;
             }
 
-            TaxTimetableModel taxTimetableModel = taxTimeTables.get(0);
-            taxModel.setAmount(taxTimetableModel.getAmount());
-            taxModel.setTaxTimetableId(taxTimetableModel.getId());
-
-            taxService.checkForPlateNumberLastHour(taxModel);
-
-            if (taxModel.getTaxStatus() == TaxStatus.NEW) {
-                taxModel = taxService.checkMaximumLimitForDayIsNotReached(taxModel);
+            int dayOfTheWeek = taxModel.getRecordedDate().getDayOfWeek().getValue();
+            if (dayOfTheWeek > 5) {
+                log.debug("Taxes are not charged during the weekend, ignoring");
+                taxModel.setTaxStatus(TaxStatus.IGNORED);
+                return taxModel;
             }
+
+            taxModel = taxService.validateSingleChargeRule(taxModel);
+            if (taxModel.getTaxStatus() != TaxStatus.NEW) {
+                return taxModel;
+            }
+
+            taxModel = taxService.checkMaximumLimitForDayIsNotReached(taxModel);
 
             if (taxModel.getTaxStatus() == TaxStatus.NEW) {
                 taxModel.setTaxStatus(TaxStatus.DUE);
-
             }
 
         } catch (Exception e) {
             log.error("Error occurred while processing uuid {}", taxModel.getUuid(), e);
             taxModel.setTaxStatus(TaxStatus.ERROR);
             taxModel.setErrorMessage("Error occurred while processing " + e.getMessage());
+        } finally {
+            taxService.saveTax(taxModel);
         }
 
-        return taxService.saveTax(taxModel);
+        return taxModel;
+    }
+
+    private void validateTaxTablesAndEnrichWithAmount(TaxModel taxModel, CityModel cityModel) {
+        LocalTime recordedTime = taxModel.getRecordedDate().toLocalTime();
+        List<TaxTimetableModel> taxTimeTables = cityModel.getTaxTimetables()
+                .stream()
+                .filter(taxTimetableModel -> recordedTime.isAfter(taxTimetableModel.getStartTime()) &&
+                        recordedTime.isBefore(taxTimetableModel.getEndTime()))
+                .toList();
+
+        if (taxTimeTables.size() != 1) {
+            log.error("Tax timetable list for uuid {} does not contain exactly one record, instead it contains {}", taxModel.getUuid(), taxTimeTables.size());
+            taxModel.setTaxStatus(TaxStatus.ERROR);
+            taxModel.setErrorMessage("Incorrect number of ");
+            taxService.saveTax(taxModel);
+        }
+
+        TaxTimetableModel taxTimetableModel = taxTimeTables.get(0);
+        taxModel.setAmount(taxTimetableModel.getAmount());
+        taxModel.setTaxTimetableId(taxTimetableModel.getId());
+    }
+
+    private Optional<CityModel> validateAndEnrichWithCityData(TaxRequestDto taxRequestDto, TaxModel taxModel) {
+        Optional<CityModel> cityOptional = cityService.fetchById(taxRequestDto.getCityId().longValue());
+        if (cityOptional.isEmpty()) {
+            log.error("City not found for id {} for uuid {}", taxRequestDto.getCityId(), taxModel.getUuid());
+            taxModel.setTaxStatus(TaxStatus.ERROR);
+            taxModel.setErrorMessage("City not found");
+            return Optional.empty();
+        }
+        CityModel cityModel = cityOptional.get();
+        taxModel.setCurrency(cityModel.getCurrency());
+        return cityOptional;
     }
 
     private Optional<String> validateRequest(TaxRequestDto taxRequestDto) {
@@ -103,6 +127,9 @@ public class TaxProcessingServiceImpl implements TaxProcessingService {
         }
         if (taxRequestDto.getTimestamp() == null) {
             return Optional.of("Timestamp missing");
+        }
+        if (taxRequestDto.getTimestamp().getYear() != 2013) {
+            return Optional.of("Timestamp is not in 2013");
         }
         return Optional.empty();
     }
