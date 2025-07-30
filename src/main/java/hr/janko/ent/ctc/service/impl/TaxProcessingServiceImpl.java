@@ -60,6 +60,7 @@ public class TaxProcessingServiceImpl implements TaxProcessingService {
             if (dayOfTheWeek > 5) {
                 log.debug("Taxes are not charged during the weekend, ignoring");
                 taxModel.setTaxStatus(TaxStatus.IGNORED);
+                taxModel.setErrorMessage("Weekend");
                 return taxModel;
             }
 
@@ -96,8 +97,8 @@ public class TaxProcessingServiceImpl implements TaxProcessingService {
         if (taxTimeTables.size() != 1) {
             log.error("Tax timetable list for uuid {} does not contain exactly one record, instead it contains {}", taxModel.getUuid(), taxTimeTables.size());
             taxModel.setTaxStatus(TaxStatus.ERROR);
-            taxModel.setErrorMessage("Incorrect number of ");
-            taxService.saveTax(taxModel);
+            taxModel.setErrorMessage("Incorrect number of tax tables");
+            return;
         }
 
         TaxTimetableModel taxTimetableModel = taxTimeTables.get(0);
